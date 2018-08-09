@@ -1,15 +1,19 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { fetchBlog } from '../../actions';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { fetchBlog } from "../../actions";
 
 class BlogShow extends Component {
   componentDidMount() {
     this.props.fetchBlog(this.props.match.params._id);
   }
-
+  renderImage = () => {
+    if (this.props.blog.imageUrl) {
+      return <img src={'https://s3-us-west-2.amazonaws.com/nodejs-advanced-concepts-course-bucket/'+this.props.blog.imageUrl} alt=''/>;
+    }
+  };
   render() {
     if (!this.props.blog) {
-      return '';
+      return "";
     }
 
     const { title, content } = this.props.blog;
@@ -18,6 +22,7 @@ class BlogShow extends Component {
       <div>
         <h3>{title}</h3>
         <p>{content}</p>
+        {this.renderImage()}
       </div>
     );
   }
@@ -27,4 +32,7 @@ function mapStateToProps({ blogs }, ownProps) {
   return { blog: blogs[ownProps.match.params._id] };
 }
 
-export default connect(mapStateToProps, { fetchBlog })(BlogShow);
+export default connect(
+  mapStateToProps,
+  { fetchBlog }
+)(BlogShow);
